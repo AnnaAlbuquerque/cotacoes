@@ -1,7 +1,7 @@
 import React, {useEffect,useState} from 'react';
 import {api} from './service/api';
 interface cotacoesData {
-  USD: {
+  [key: string]: {
     code: string,
     codein: string,
     name:string,
@@ -18,33 +18,34 @@ interface cotacoesData {
 
 const App = () => {
 
-  const [cotacoes, setCotacoes] = useState<cotacoesData>();
+  const [cotacoes, setCotacoes] = useState<cotacoesData>({});
 
   useEffect(() => {
    api.get('/').then(
       response => {
-        setCotacoes(response.data)
-        console.log(response.data)
+        setCotacoes(response.data);
       } 
    );
   }, []);
 
-  //console.log(cotacoes);
   return (
-    <>
+    <> 
       <h1>Cotações</h1>
-      
-        <div className="card "key={cotacoes?.USD.name}>
-          <div className="container">
-            <h4><b>{cotacoes?.USD.name}</b></h4>
-            <p>Code: {cotacoes?.USD.code}</p>
-            <p>Code In: {cotacoes?.USD.codein}</p>
-            <p>High: {cotacoes?.USD.high}</p>
-            <p>Low: {cotacoes?.USD.low}</p>
-            <p>Bid: {cotacoes?.USD.varBid}</p>
+      {Object.keys(cotacoes).map(key => {
+        const cotacao = cotacoes[key];
+        return (
+          <div className="card "key={cotacao.name}>
+            <div className="container">
+              <h4><b>{cotacao.name}</b></h4>
+              <p>Code: {cotacao.code}</p>
+              <p>Code In: {cotacao.codein}</p>
+              <p>High: {cotacao.high}</p>
+              <p>Low: {cotacao.low}</p>
+              <p>Bid: {cotacao.varBid}</p>
+            </div>
           </div>
-        </div>
-      
+        )
+      })}
   </>
   );
 }
