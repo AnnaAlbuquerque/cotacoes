@@ -1,26 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect,useState} from 'react';
+import {api} from './service/api';
+interface cotacoesData {
+  USD: {
+    code: string,
+    codein: string,
+    name:string,
+    high:string,
+    low:string,
+    varBid:string,
+    pctChange:string,
+    bid:string,
+    ask:string,
+    timestamp: string,
+    create_date: Date,
+  },
+}
 
-function App() {
+const App = () => {
+
+  const [cotacoes, setCotacoes] = useState<cotacoesData>();
+
+  useEffect(() => {
+   api.get('/').then(
+      response => {
+        setCotacoes(response.data)
+        console.log(response.data)
+      } 
+   );
+  }, []);
+
+  //console.log(cotacoes);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1>Cotações</h1>
+      
+        <div className="card "key={cotacoes?.USD.name}>
+          <div className="container">
+            <h4><b>{cotacoes?.USD.name}</b></h4>
+            <p>Code: {cotacoes?.USD.code}</p>
+            <p>Code In: {cotacoes?.USD.codein}</p>
+            <p>High: {cotacoes?.USD.high}</p>
+            <p>Low: {cotacoes?.USD.low}</p>
+            <p>Bid: {cotacoes?.USD.varBid}</p>
+          </div>
+        </div>
+      
+  </>
   );
 }
 
-export default App;
+export {App};
